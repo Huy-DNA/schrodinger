@@ -1,5 +1,11 @@
 # @huy-dna/schrodinger
 
+## 0.0.4
+
+### Patch Changes
+
+- include dist in published files
+
 ## 0.0.3
 
 ### Patch Changes
