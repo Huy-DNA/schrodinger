@@ -1,6 +1,6 @@
 {
   "name": "@huy-dna/schrodinger",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A weakref layer for cache",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

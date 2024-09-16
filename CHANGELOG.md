@@ -1,5 +1,11 @@
 # @huy-dna/schrodinger
 
+## 0.0.9
+
+### Patch Changes
+
+- use ? instead of | undefined
+
 ## 0.0.8
 
 ### Patch Changes
