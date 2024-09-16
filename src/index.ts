@@ -79,13 +79,13 @@ export class Catche<K, V extends object> {
     }());
   }
 
-  forEach (fn: (value: V, key: K, map: Catche<K, V>) => void) {
+  forEach (fn: (value: V, key: K, map: Catche<K, V>) => void, thisArg?: unknown) {
     this.#map.forEach((value, key) => {
       const _value = value.deref();
       if (_value) {
         fn(_value, key, this);
       }
-    })
+    }, thisArg);
   }
 
   size (): number {
