@@ -29,6 +29,10 @@ export class Catche<K, V extends object> {
     }
     this.#map.delete(key);
   }
+  
+  has (key: K): boolean {
+    return !!this.#map.get(key)?.deref();
+  }
 
   clear () {
     this.#map.clear();
@@ -37,5 +41,58 @@ export class Catche<K, V extends object> {
     this.#registry = new FinalizationRegistry((key) => {
       newMap.delete(key);
     });
+  }
+
+  entries (): Iterator<[K, V], void, undefined> {
+    const iter = this.#map.entries();
+    return (function* () {
+      for (const entry of iter) {
+        const value = entry[1].deref();
+        if (value !== undefined) {
+          yield [entry[0], value];
+        }
+      }
+    }());
+  }
+
+  keys (): Iterator<K, void, undefined> {
+    const iter = this.#map.entries();
+    return (function* () {
+      for (const entry of iter) {
+        const value = entry[1].deref();
+        if (value !== undefined) {
+          yield entry[0];
+        }
+      }
+    }());
+  }
+
+  values (): Iterator<V, void, undefined> {
+    const iter = this.#map.entries();
+    return (function* () {
+      for (const entry of iter) {
+        const value = entry[1].deref();
+        if (value !== undefined) {
+          yield value;
+        }
+      }
+    }());
+  }
+
+  forEach (fn: (value: V, key: K, map: Catche<K, V>) => void) {
+    this.#map.forEach((value, key) => {
+      const _value = value.deref();
+      if (_value) {
+        fn(_value, key, this);
+      }
+    })
+  }
+
+  size (): number {
+    return this.#map.size;
+  }
+
+  [Symbol.iterator] (): Iterator<V, void, undefined> {
+    return this.values();
   }
 }
