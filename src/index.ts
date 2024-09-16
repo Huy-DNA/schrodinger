@@ -22,6 +22,14 @@ export class Catche<K, V extends object> {
     this.#registry.register(value, key, value);
   }
 
+  delete (key: K) {
+    const oldVal = this.#map.get(key)?.deref();
+    if (oldVal) {
+      this.#registry.unregister(oldVal);
+    }
+    this.#map.delete(key);
+  }
+
   clear () {
     this.#map.clear();
     const newMap = new Map();
