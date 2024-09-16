@@ -1,5 +1,11 @@
 # @huy-dna/schrodinger
 
+## 0.0.6
+
+### Patch Changes
+
+- support non-object values
+
 ## 0.0.5
 
 ### Patch Changes
