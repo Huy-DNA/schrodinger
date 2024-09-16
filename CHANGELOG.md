@@ -1,5 +1,11 @@
 # @huy-dna/schrodinger
 
+## 0.0.5
+
+### Patch Changes
+
+- support passing thisArg to forEach
+
 ## 0.0.4
 
 ### Patch Changes
