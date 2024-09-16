@@ -19,7 +19,8 @@ export class Catche<K, V> {
     return value as V | undefined;
   }
 
-  set (key: K, value: V, { alwaysAlive }: { alwaysAlive: boolean }) {
+  set (key: K, value: V, options: { alwaysAlive: boolean } | undefined) {
+    const { alwaysAlive = false } = options || {};
     const oldVal = this.get(key);
     if (isObject(oldVal)) {
       this.#registry.unregister(oldVal);
