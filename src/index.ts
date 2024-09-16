@@ -1,5 +1,7 @@
-export class Catche<K, V extends object> {
-  #map: Map<K, WeakRef<V>>;
+import { isObject } from './utils';
+
+export class Catche<K, V> {
+  #map: Map<K, unknown>;
   #registry: FinalizationRegistry<K>;
   constructor () {
     const map = new Map();
@@ -10,20 +12,28 @@ export class Catche<K, V extends object> {
   }
 
   get (key: K): V | undefined {
-    return this.#map.get(key)?.deref();
+    const value = this.#map.get(key);
+    if (value instanceof WeakRef) {
+      return value.deref();
+    }
+    return value as V | undefined;
   }
 
   set (key: K, value: V) {
-    const oldVal = this.#map.get(key)?.deref();
-    if (oldVal) {
+    const oldVal = this.get(key);
+    if (isObject(oldVal)) {
       this.#registry.unregister(oldVal);
     }
-    this.#map.set(key, new WeakRef(value));
-    this.#registry.register(value, key, value);
+    if (isObject(value)) {
+      this.#map.set(key, new WeakRef(value));
+      this.#registry.register(value, key, value);
+    } else {
+      this.#map.set(key, value);
+    }
   }
 
   delete (key: K) {
-    const oldVal = this.#map.get(key)?.deref();
+    const oldVal = this.get(key);
     if (oldVal) {
       this.#registry.unregister(oldVal);
     }
@@ -31,7 +41,7 @@ export class Catche<K, V extends object> {
   }
   
   has (key: K): boolean {
-    return !!this.#map.get(key)?.deref();
+    return !!this.get(key);
   }
 
   clear () {
@@ -47,7 +57,7 @@ export class Catche<K, V extends object> {
     const iter = this.#map.entries();
     return (function* () {
       for (const entry of iter) {
-        const value = entry[1].deref();
+        const value = entry[1] instanceof WeakRef ? entry[1].deref() : entry[1];
         if (value !== undefined) {
           yield [entry[0], value];
         }
@@ -59,7 +69,7 @@ export class Catche<K, V extends object> {
     const iter = this.#map.entries();
     return (function* () {
       for (const entry of iter) {
-        const value = entry[1].deref();
+        const value = entry[1] instanceof WeakRef ? entry[1].deref() : entry[1];
         if (value !== undefined) {
           yield entry[0];
         }
@@ -71,7 +81,7 @@ export class Catche<K, V extends object> {
     const iter = this.#map.entries();
     return (function* () {
       for (const entry of iter) {
-        const value = entry[1].deref();
+        const value = entry[1] instanceof WeakRef ? entry[1].deref() : entry[1];
         if (value !== undefined) {
           yield value;
         }
@@ -81,7 +91,7 @@ export class Catche<K, V extends object> {
 
   forEach (fn: (value: V, key: K, map: Catche<K, V>) => void, thisArg?: unknown) {
     this.#map.forEach((value, key) => {
-      const _value = value.deref();
+      const _value = value instanceof WeakRef ? value.deref() : value;
       if (_value) {
         fn(_value, key, this);
       }
