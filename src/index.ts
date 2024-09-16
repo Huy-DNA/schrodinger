@@ -19,12 +19,12 @@ export class Catche<K, V> {
     return value as V | undefined;
   }
 
-  set (key: K, value: V) {
+  set (key: K, value: V, { alwaysAlive }: { alwaysAlive: boolean }) {
     const oldVal = this.get(key);
     if (isObject(oldVal)) {
       this.#registry.unregister(oldVal);
     }
-    if (isObject(value)) {
+    if (isObject(value) && !alwaysAlive) {
       this.#map.set(key, new WeakRef(value));
       this.#registry.register(value, key, value);
     } else {
