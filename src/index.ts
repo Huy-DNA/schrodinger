@@ -19,7 +19,7 @@ export class Catche<K, V> {
     return value as V | undefined;
   }
 
-  set (key: K, value: V, options: { alwaysAlive: boolean } | undefined) {
+  set (key: K, value: V, options?: { alwaysAlive: boolean }) {
     const { alwaysAlive = false } = options || {};
     const oldVal = this.get(key);
     if (isObject(oldVal)) {
