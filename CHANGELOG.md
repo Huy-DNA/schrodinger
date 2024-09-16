@@ -1,5 +1,11 @@
 # @huy-dna/schrodinger
 
+## 0.0.8
+
+### Patch Changes
+
+- make options to set optional
+
 ## 0.0.7
 
 ### Patch Changes
